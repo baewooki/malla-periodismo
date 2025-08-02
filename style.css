@@ -1,1 +1,39 @@
+body {
+  font-family: sans-serif;
+  background: #f9f9fb;
+  padding: 20px;
+}
 
+.semestre {
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #fff;
+}
+
+.semestre h2 {
+  margin-top: 0;
+}
+
+.ramo {
+  display: inline-block;
+  margin: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: pink;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ramo.aprobado {
+  background-color: #8e44ad;
+  color: white;
+  text-decoration: line-through;
+}
+
+.ramo.bloqueado {
+  background-color: #ccc;
+  color: #555;
+  cursor: not-allowed;
+}
