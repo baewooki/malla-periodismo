@@ -81,90 +81,6 @@ const data = {
   ]
 };
 
-
-const data = {
-  "1er semestre": [
-    { nombre: "Prensa Escrita I: Noticias", creditos: 6 },
-    { nombre: "Comunicación y Realidad", creditos: 5 },
-    { nombre: "Redacción General", creditos: 5 },
-    { nombre: "Argumentación y Pensamiento Crítico", creditos: 5 },
-    { nombre: "Historia Contemporánea", creditos: 4 },
-    { nombre: "Inglés General I", creditos: 5 },
-    { nombre: "Actualidad I", creditos: 1 }
-  ],
-  "2do semestre": [
-    { nombre: "Redacción Periodística", creditos: 6 },
-    { nombre: "Digital I: Medios Online", creditos: 5 },
-    { nombre: "Paradigmas de la Comunicación", creditos: 5 },
-    { nombre: "Historia del Periodismo Chileno", creditos: 4 },
-    { nombre: "Ideas Contemporáneas", creditos: 5 },
-    { nombre: "Inglés General II", creditos: 5 },
-    { nombre: "Actualidad II", creditos: 1 }
-  ],
-  "3er semestre": [
-    { nombre: "Caja de Herramientas del Periodista", creditos: 6 },
-    { nombre: "Audiovisual I: Locución e Imagen", creditos: 5 },
-    { nombre: "Digital II: Videos y Redes Sociales", creditos: 5 },
-    { nombre: "Investigación en Comunicación Social I", creditos: 5 },
-    { nombre: "Chile entre Siglos", creditos: 4 },
-    { nombre: "Inglés General III", creditos: 5 },
-    { nombre: "Actualidad III", creditos: 1 }
-  ],
-  "4to semestre": [
-    { nombre: "Redacción Digital I", creditos: 6 },
-    { nombre: "Audiovisual II: Lenguaje y Guion", creditos: 5 },
-    { nombre: "Periodismo Fotográfico", creditos: 5 },
-    { nombre: "Investigación en Comunicación Social II", creditos: 5 },
-    { nombre: "Chile en el Siglo XX", creditos: 4 },
-    { nombre: "Introducción a la Economía", creditos: 5 },
-    { nombre: "Actualidad IV", creditos: 1 }
-  ],
-  "5to semestre": [
-    { nombre: "Prensa Escrita II: Crónicas y Perfiles", creditos: 5 },
-    { nombre: "Audiovisual III: Noticias", creditos: 5 },
-    { nombre: "Taller de Actualidad Económica", creditos: 5 },
-    { nombre: "Comunicación Estratégica", creditos: 5 },
-    { nombre: "Electivo I", creditos: 5 },
-    { nombre: "Ética y Legislación Periodística", creditos: 5 },
-    { nombre: "Actualidad V", creditos: 1 }
-  ],
-  "6to semestre": [
-    { nombre: "Taller de Reportajes Interpretativos", creditos: 5 },
-    { nombre: "Periodismo Radial", creditos: 5 },
-    { nombre: "Digital III: Periodismo de Datos y Visualización", creditos: 5 },
-    { nombre: "Comunicación Organizacional", creditos: 5 },
-    { nombre: "Instituciones y Procesos Políticos", creditos: 5 },
-    { nombre: "Curso de Formación General I", creditos: 5 },
-    { nombre: "Actualidad VI", creditos: 1 }
-  ],
-  "7mo semestre": [
-    { nombre: "Periodismo de Investigación", creditos: 6 },
-    { nombre: "Audiovisual IV: Reportaje y Producción", creditos: 5 },
-    { nombre: "Taller de Reporteo de Actualidad", creditos: 5 },
-    { nombre: "Audiencias y Opinión Pública", creditos: 5 },
-    { nombre: "Podcast y Crónicas radiales", creditos: 5 },
-    { nombre: "Práctica I", creditos: 7 },
-    { nombre: "Curso de Formación General II", creditos: 5 },
-    { nombre: "Actualidad VII", creditos: 1 }
-  ],
-  "8vo semestre": [
-    { nombre: "Redacción Digital II", creditos: 6 },
-    { nombre: "Audiovisual V: Documental Audiovisual", creditos: 5 },
-    { nombre: "Electivo II", creditos: 5 },
-    { nombre: "Gestión de Crisis", creditos: 4 },
-    { nombre: "Electivo III", creditos: 5 },
-    { nombre: "Curso de Formación General III", creditos: 5 },
-    { nombre: "Actualidad VIII", creditos: 1 }
-  ],
-  "9no semestre": [
-    { nombre: "Proyecto de Título", creditos: 10 },
-    { nombre: "Gestión de Medios", creditos: 4 },
-    { nombre: "Electivo IV", creditos: 5 },
-    { nombre: "Práctica II", creditos: 15 },
-    { nombre: "Curso de Formación General IV", creditos: 5 }
-  ]
-};
-
 const requisitos = {
   "Redacción Periodística": ["Prensa Escrita I: Noticias"],
   "Inglés General II": ["Inglés General I"],
@@ -206,3 +122,72 @@ const requisitos = {
   "Gestión de Medios": ["155 créditos"],
   "Práctica II": ["212 créditos", "Redacción Digital II"]
 };
+
+const estado = JSON.parse(localStorage.getItem("estadoRamos")) || {};
+const container = document.getElementById("malla");
+const creditosSpan = document.getElementById("creditos-aprobados");
+
+function calcularCreditos() {
+  let total = 0;
+  for (const semestre of Object.values(data)) {
+    for (const { nombre, creditos } of semestre) {
+      if (estado[nombre]) total += creditos;
+    }
+  }
+  creditosSpan.textContent = total;
+}
+
+for (const [semestreNombre, ramos] of Object.entries(data)) {
+  const box = document.createElement("div");
+  box.className = "semestre";
+
+  const title = document.createElement("h2");
+  title.textContent = semestreNombre;
+  box.appendChild(title);
+
+  ramos.forEach(({ nombre, creditos }) => {
+    const div = document.createElement("div");
+    div.className = "ramo";
+    div.textContent = nombre;
+    div.dataset.nombre = nombre;
+    div.dataset.creditos = creditos;
+
+    if (estado[nombre]) div.classList.add("aprobado");
+    box.appendChild(div);
+  });
+
+  container.appendChild(box);
+}
+
+function actualizarBloqueos() {
+  document.querySelectorAll(".ramo").forEach(div => {
+    const nombre = div.dataset.nombre;
+    const prer = requisitos[nombre];
+
+    if (prer) {
+      const bloqueado = prer.some(req => {
+        if (req.includes("créditos")) {
+          const requeridos = parseInt(req);
+          return calcularCreditos() < requeridos;
+        }
+        return !estado[req];
+      });
+      div.classList.toggle("bloqueado", bloqueado);
+    }
+  });
+}
+
+document.querySelectorAll(".ramo").forEach(div => {
+  div.addEventListener("click", () => {
+    if (div.classList.contains("bloqueado")) return;
+    const nombre = div.dataset.nombre;
+    div.classList.toggle("aprobado");
+    estado[nombre] = div.classList.contains("aprobado");
+    localStorage.setItem("estadoRamos", JSON.stringify(estado));
+    calcularCreditos();
+    actualizarBloqueos();
+  });
+});
+
+calcularCreditos();
+actualizarBloqueos();
